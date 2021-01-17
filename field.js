@@ -14,12 +14,11 @@ class Field {
   }
 
   print() {
-    let presentation = '';
     this.tiles.forEach(row => {
-      row.forEach(tile => presentation += tile);
-      row += '\n';
+      let line = '';
+      row.forEach(tile => line += tile);
+      console.log(line);
     });
-    console.log(presentation);
   }
 
   getResult() {
@@ -30,8 +29,8 @@ class Field {
     return lowerBound + Math.floor(Math.random() * (upperBound - lowerBound));
   }
 
-  static generateField(height, width, holePercentage) {
-    const holeCount = Math.floor(height * width * holePercentage / 100);
+  static generateField(height, width, holeRatio) {
+    const holeCount = Math.floor(height * width * holeRatio);
     const tiles = [];
     let hatPlaced = false;
 
@@ -44,7 +43,7 @@ class Field {
     }
     
     for (let i = 0; i < holeCount; i++) {
-      tiles[pickValue(1, height)][this.pickValue(1, width)] = hole;
+      tiles[Field.pickValue(1, height)][Field.pickValue(1, width)] = hole;
     }
 
     while (!hatPlaced) {
