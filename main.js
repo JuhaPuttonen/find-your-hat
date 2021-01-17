@@ -6,7 +6,12 @@ const down = 'd';
 const left = 'l';
 const right = 'r';
 
-const arena = new field.Field(field.Field.generateField(10, 10, 0.2));
+let arena;
+
+do {
+  arena = new field.Field(field.Field.generateField(10, 10, 0.2));
+} while (!arena.validate());
+
 let result;
 
 do {

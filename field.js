@@ -22,6 +22,14 @@ class Field {
     this._result = result;
   }
 
+  get width() {
+    return this._tiles[0].length;
+  }
+
+  get height() {
+    return this._tiles.length;
+  }
+
   findHero() {
     for (let i = 0; i < this.tiles.length; i++) {
       for (let j = 0; j < this.tiles.length; j++) {
@@ -105,6 +113,36 @@ class Field {
 
     return tiles;
   }
+
+  validate() {
+    const start = this.findHero();
+    const explored = new Array(this.height).fill(false).map(
+        () => new Array(this.width).fill(false));
+    
+    return searchFrom(start, explored, this);
+  }
+}
+
+function searchFrom(start, explored, field) {
+  if (start[0] < 0 || start[0] >= field.height
+      || start[1] < 0 || start[1] >= field.width) {
+    return false;
+  } else if (explored[start[0]][start[1]]) {
+    return false;
+  } else if (field.tiles[start[0]][start[1]] === hat) {
+    explored[start[0]][start[1]] = true;
+    return true;
+  } else if (field.tiles[start[0]][start[1]] === hole) {
+    explored[start[0]][start[1]] = true;
+    return false;
+  }
+
+  explored[start[0]][start[1]] = true;
+
+  return searchFrom([start[0], start[1] - 1], explored, field)
+    || searchFrom([start[0] - 1, start[1]], explored, field)
+    || searchFrom([start[0], start[1] + 1], explored, field)
+    || searchFrom([start[0] + 1, start[1]], explored, field);
 }
 
 module.exports = {
