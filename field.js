@@ -8,6 +8,7 @@ class Field {
   constructor(array) {
     this._tiles = array;
     this._result = null;
+    this._hardMode = false;
   }
 
   get tiles() {
@@ -28,6 +29,14 @@ class Field {
 
   get height() {
     return this._tiles.length;
+  }
+
+  get hardMode() {
+    return this._hardMode;
+  }
+
+  set hardMode(hardMode) {
+    this._hardMode = hardMode;
   }
 
   findHero() {
@@ -58,7 +67,21 @@ class Field {
   }
 
   evolve() {
+    if (!this.hardMode) {
+      return;
+    }
+    const emptySpots = [];
 
+    this.tiles.forEach((row, rowIndex) => {
+      row.forEach((tile, columnIndex) => {
+        if (tile === fieldCharacter || tile === pathCharacter) {
+          emptySpots.push([rowIndex, columnIndex]);
+        }
+      })
+    });
+
+    const spot = emptySpots[Math.floor(Math.random() * emptySpots.length)];
+    this.tiles[spot[0]][spot[1]] = hole;
   }
 
   print() {
@@ -67,10 +90,6 @@ class Field {
       row.forEach(tile => line += tile);
       console.log(line);
     });
-  }
-
-  static pickValue(lowerBound, upperBound) {
-    return lowerBound + Math.floor(Math.random() * (upperBound - lowerBound));
   }
 
   static generateField(height, width, holeRatio) {
@@ -88,12 +107,12 @@ class Field {
     }
     
     for (let i = 0; i < holeCount; i++) {
-      tiles[Field.pickValue(0, height)][Field.pickValue(0, width)] = hole;
+      tiles[pickValue(0, height)][pickValue(0, width)] = hole;
     }
 
     while (!hatPlaced) {
-      const row = Field.pickValue(0, height);
-      const column = Field.pickValue(0, width);
+      const row = pickValue(0, height);
+      const column = pickValue(0, width);
 
       if (tiles[row][column] === fieldCharacter) {
         tiles[row][column] = hat;
@@ -102,8 +121,8 @@ class Field {
     }
 
     while (!heroPlaced) {
-      const row = Field.pickValue(0, height);
-      const column = Field.pickValue(0, width);
+      const row = pickValue(0, height);
+      const column = pickValue(0, width);
 
       if (tiles[row][column] === fieldCharacter) {
         tiles[row][column] = hero;
@@ -121,6 +140,10 @@ class Field {
     
     return searchFrom(start, explored, this);
   }
+}
+
+function pickValue(lowerBound, upperBound) {
+  return lowerBound + Math.floor(Math.random() * (upperBound - lowerBound));
 }
 
 function searchFrom(start, explored, field) {

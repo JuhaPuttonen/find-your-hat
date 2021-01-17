@@ -6,15 +6,18 @@ const down = 'd';
 const left = 'l';
 const right = 'r';
 
+const hardMode = '--hard' === process.argv[2];
 let arena;
 
 do {
   arena = new field.Field(field.Field.generateField(10, 10, 0.2));
 } while (!arena.validate());
 
+arena.hardMode = hardMode;
+
 let result;
 
-do {
+while (!arena.result) {
   console.clear();
   arena.print();
   const input = prompt('Which way? ').toLowerCase();
@@ -37,6 +40,12 @@ do {
       continue;
   }
   arena.evolve();
-} while (!(result = arena.result));
+  
+  if (!arena.validate()) {
+    arena.result = 'All paths to the hat have become blocked!';
+    console.clear();
+    arena.print();
+  }
+}
 
-console.log(result)
+console.log(arena.result)
