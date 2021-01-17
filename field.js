@@ -7,10 +7,50 @@ const hero = '@';
 class Field {
   constructor(array) {
     this._tiles = array;
+    this._result = null;
   }
 
   get tiles() {
     return this._tiles;
+  }
+
+  get result() {
+    return this._result;
+  }
+
+  set result(result) {
+    this._result = result;
+  }
+
+  findHero() {
+    for (let i = 0; i < this.tiles.length; i++) {
+      for (let j = 0; j < this.tiles.length; j++) {
+        if (hero === this.tiles[i][j]) {
+          return [i, j];
+        }
+      }
+    }
+  }
+
+  moveHero(horizontalDelta, verticalDelta) {
+    const oldCoordinates = this.findHero();
+    const newCoordinates = [oldCoordinates[0] + verticalDelta, oldCoordinates[1] + horizontalDelta];
+
+    if (newCoordinates[0] < 0 || newCoordinates[0] >= this.tiles.length
+        || newCoordinates[1] < 0 || newCoordinates[1] >= this.tiles[0].length) {
+      this.result = 'Out of bounds instruction!';
+    } else if (hole === this.tiles[newCoordinates[0]][newCoordinates[1]]) {
+      this.result = 'You fell down a hole!';
+    } else if (hat === this.tiles[newCoordinates[0]][newCoordinates[1]]) {
+      this.result = 'Congratulations, you found your hat!';
+    } else {
+      this.tiles[oldCoordinates[0]][oldCoordinates[1]] = pathCharacter;
+      this.tiles[newCoordinates[0]][newCoordinates[1]] = hero;
+    }
+  }
+
+  evolve() {
+
   }
 
   print() {
@@ -19,10 +59,6 @@ class Field {
       row.forEach(tile => line += tile);
       console.log(line);
     });
-  }
-
-  getResult() {
-    return 'Not implemented';
   }
 
   static pickValue(lowerBound, upperBound) {
@@ -63,10 +99,5 @@ class Field {
 }
 
 module.exports = {
-  Field,
-  hat,
-  hole,
-  fieldCharacter,
-  pathCharacter,
-  hero
+  Field
 };
