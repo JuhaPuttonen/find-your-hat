@@ -6,9 +6,11 @@ const down = 'd';
 const left = 'l';
 const right = 'r';
 
+// Check if the user has activated hard mode
 const hardMode = '--hard' === process.argv[2];
 let arena;
 
+// Generate a new, initially solvable level
 do {
   arena = new field.Field(field.Field.generateField(10, 10, 0.2));
 } while (!arena.validate());
@@ -41,6 +43,7 @@ while (!arena.result) {
   }
   arena.evolve();
   
+  // Check if the level can still be completed
   if (!arena.validate()) {
     arena.result = 'All paths to the hat have become blocked!';
     console.clear();
@@ -48,4 +51,4 @@ while (!arena.result) {
   }
 }
 
-console.log(arena.result)
+console.log(arena.result);

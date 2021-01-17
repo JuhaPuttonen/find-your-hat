@@ -67,9 +67,12 @@ class Field {
   }
 
   evolve() {
+    // The game field evolves only in hard mode
     if (!this.hardMode) {
       return;
     }
+
+    // Pick a spot a new hole
     const emptySpots = [];
 
     this.tiles.forEach((row, rowIndex) => {
@@ -98,6 +101,7 @@ class Field {
     let hatPlaced = false;
     let heroPlaced = false;
 
+    // Create empty tiles
     for (let rowIndex = 0; rowIndex < height; rowIndex++) {
       const row = [];
       for (let columnIndex = 0; columnIndex < width; columnIndex++) {
@@ -106,10 +110,12 @@ class Field {
       tiles.push(row);
     }
     
+    // Place the initial holes onto the field
     for (let i = 0; i < holeCount; i++) {
       tiles[pickValue(0, height)][pickValue(0, width)] = hole;
     }
 
+    // Place the hat onto the field
     while (!hatPlaced) {
       const row = pickValue(0, height);
       const column = pickValue(0, width);
@@ -120,6 +126,7 @@ class Field {
       }
     }
 
+    // Place the hero onto the field
     while (!heroPlaced) {
       const row = pickValue(0, height);
       const column = pickValue(0, width);
