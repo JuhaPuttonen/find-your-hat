@@ -69,6 +69,7 @@ class Field {
     const holeCount = Math.floor(height * width * holeRatio);
     const tiles = [];
     let hatPlaced = false;
+    let heroPlaced = false;
 
     for (let rowIndex = 0; rowIndex < height; rowIndex++) {
       const row = [];
@@ -79,12 +80,12 @@ class Field {
     }
     
     for (let i = 0; i < holeCount; i++) {
-      tiles[Field.pickValue(1, height)][Field.pickValue(1, width)] = hole;
+      tiles[Field.pickValue(0, height)][Field.pickValue(0, width)] = hole;
     }
 
     while (!hatPlaced) {
-      const row = Field.pickValue(1, height);
-      const column = Field.pickValue(1, width);
+      const row = Field.pickValue(0, height);
+      const column = Field.pickValue(0, width);
 
       if (tiles[row][column] === fieldCharacter) {
         tiles[row][column] = hat;
@@ -92,7 +93,15 @@ class Field {
       }
     }
 
-    tiles[0][0] = hero;
+    while (!heroPlaced) {
+      const row = Field.pickValue(0, height);
+      const column = Field.pickValue(0, width);
+
+      if (tiles[row][column] === fieldCharacter) {
+        tiles[row][column] = hero;
+        heroPlaced = true;
+      }
+    }
 
     return tiles;
   }
