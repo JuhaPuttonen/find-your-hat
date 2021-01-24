@@ -41,7 +41,7 @@ class Field {
 
   findHero() {
     for (let i = 0; i < this.tiles.length; i++) {
-      for (let j = 0; j < this.tiles.length; j++) {
+      for (let j = 0; j < this.tiles[i].length; j++) {
         if (hero === this.tiles[i][j]) {
           return [i, j];
         }
@@ -144,35 +144,44 @@ class Field {
     const start = this.findHero();
     const explored = new Array(this.height).fill(false).map(
         () => new Array(this.width).fill(false));
+    const nextTiles = [ start ];
+    let hatReached = false;
+
+    while (nextTiles.length > 0) {
+      const tile = nextTiles.pop();
+
+      if (this.tiles[tile[0]][tile[1]] === hat) {
+        hatReached = true;
+        break;
+      }
+
+      const left = [tile[0], tile[1] - 1];
+      const up = [tile[0] - 1, tile[1]];
+      const right = [tile[0], tile[1] + 1];
+      const down = [tile[0] + 1, tile[1]];
+      const possibleSteps = [left, up, right, down];
+
+      possibleSteps.forEach(step => {
+        if (this.canGoTo(step) && !explored[step[0]][step[1]]) {
+          nextTiles.push(step);
+        }
+      });
+
+      explored[tile[0]][tile[1]] = true;
+    }
     
-    return searchFrom(start, explored, this);
+    return hatReached;
+  }
+
+  canGoTo(tile) {
+    return (tile[0] >= 0 && tile[0] < this.height)
+    && (tile[1] >= 0 && tile[1] < this.width)
+    && (this.tiles[tile[0]][tile[1]] !== hole);
   }
 }
 
 function pickValue(lowerBound, upperBound) {
   return lowerBound + Math.floor(Math.random() * (upperBound - lowerBound));
-}
-
-function searchFrom(start, explored, field) {
-  if (start[0] < 0 || start[0] >= field.height
-      || start[1] < 0 || start[1] >= field.width) {
-    return false;
-  } else if (explored[start[0]][start[1]]) {
-    return false;
-  } else if (field.tiles[start[0]][start[1]] === hat) {
-    explored[start[0]][start[1]] = true;
-    return true;
-  } else if (field.tiles[start[0]][start[1]] === hole) {
-    explored[start[0]][start[1]] = true;
-    return false;
-  }
-
-  explored[start[0]][start[1]] = true;
-
-  return searchFrom([start[0], start[1] - 1], explored, field)
-    || searchFrom([start[0] - 1, start[1]], explored, field)
-    || searchFrom([start[0], start[1] + 1], explored, field)
-    || searchFrom([start[0] + 1, start[1]], explored, field);
 }
 
 module.exports = {

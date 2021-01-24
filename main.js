@@ -12,7 +12,7 @@ let arena;
 
 // Generate a new, initially solvable level
 do {
-  arena = new field.Field(field.Field.generateField(10, 10, 0.2));
+  arena = new field.Field(field.Field.generateField(10, 20, 0.2));
 } while (!arena.validate());
 
 arena.hardMode = hardMode;
